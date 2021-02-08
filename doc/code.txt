@@ -1,0 +1,314 @@
+create table paper(
+    papid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    papname char(50) ,
+    papabustruct char(255),
+    pappublisher char(50),
+    uplodedfile varbinary(1000)
+
+)
+create table reviewer(
+    revid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    revname char(50)
+)
+create table publisher (
+    pubid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    pubemail VARCHAR(50) NOT NULL UNIQUE,
+    pubpassword VARCHAR(255) NOT NULL
+);
+
+
+
+
+
+paper
+/*
+CREATE VIEW pap_view AS
+SELECT papname, papabustruct, pappublisher
+FROM  paper;
+
+INSERT INTO pap_view (papname, papabustruct, pappublisher) VALUES ('$papname', '$papabustruct' ,'$pappublisher');
+INSERT INTO pap_view (papname, papabustruct, pappublisher) VALUES ('php', 'data type, array ,date' ,'Alaa abdelmotlep');
+
+SELECT * FROM pap_view;
+
+UPDATE pap_view
+   SET condition = value
+   WHERE col = 'value';
+
+DELETE FROM pap_view
+   WHERE conditon;
+
+DROP VIEW pap_view;
+*/
+
+
+to modify view table , u must drop it and recreate .... LOL
+
+
+puplisher
+/*
+CREATE VIEW pub_view AS
+SELECT pubemail, pubpassword
+FROM  publisher;
+
+INSERT INTO pub_view (pubemail, pubpassword) VALUES ('$pubemail', '$pubpassword');
+
+SELECT * FROM pub_view;
+
+UPDATE pub_view
+   SET condition = value
+   WHERE col = 'value';
+
+DELETE FROM pub_view
+   WHERE conditon;
+
+DELETE FROM pub_view WHERE pubid = 26
+
+DROP VIEW pub_view;
+*/
+ 
+
+
+
+--------------------------------------------------------------------
+procedure 
+
+/* 
+create 
+*/
+
+DELIMITER //
+
+CREATE PROCEDURE all_submited_paper()
+BEGIN
+	SELECT papid, papname, papabustruct, pappublisher, uplodedfile  FROM paper ;
+END //
+
+DELIMITER ;
+
+call all_submited_paper();
+
+
+/*insert into*/
+
+DELIMITER //
+
+CREATE PROCEDURE insert_paper(IN 
+                pap_name char(50) ,
+    		pap_abustruct char(255),
+    		pap_publisher char(50),
+    		uploded_file varbinary(1000)
+                             )
+BEGIN
+	INSERT INTO paper (papname, papabustruct, pappublisher, uplodedfile)
+  VALUES  (pap_name ,pap_abustruct, pap_publisher, uploded_file);
+END //
+
+DELIMITER ;
+
+call insert_paper('".$_POST["papname"]."');
+
+
+/*update*/
+CREATE PROCEDURE update_paper(IN
+                        pap_id INT,
+    			uploded_file varbinary(1000)
+                             )
+BEGIN
+	UPDATE paper SET uplodedfile = uploded_file WHERE papid = pap_id ;
+END //
+
+DELIMITER ;
+
+
+
+CREATE PROCEDURE update_paper (IN
+                        papid INT,
+    					papname char(50) ,
+    					papabustruct char(255),
+    					pappublisher char(50),
+    					uplodedfile varbinary(1000)
+                             )
+BEGIN
+	UPDATE paper SET uplodedfile = uploded_file WHERE papid = pap_id ;
+END //
+
+DELIMITER ;
+
+/*delete*/
+
+DELIMITER//
+CREATE PROCEDURE delete_paper (IN
+                        papid INT
+                             )
+BEGIN
+	DELETE FROM paper WHERE papid = pap_id ;
+END //
+
+DELIMITER ;
+
+-------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+_________________________________________________________________________
+
+You must always use prepared statements for any SQL query that would contain a PHP variable.
+To do so, always follow the below steps:
+
+Create a correct SQL SELECT statement. Test it in mysql console/phpmyadmin if needed
+Replace all variables in the query with question marks (called placeholders or parameters)
+Prepare the resulting query
+Bind all variables to the previously prepared statement
+Execute the statement
+Get the mysqli result variable from the statement.
+Fetch your data
+Long story short, here is the code:
+
+$sql = "SELECT * FROM users WHERE id=?"; // SQL with parameters
+$stmt = $conn->prepare($sql); 
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result(); // get the mysqli result
+$user = $result->fetch_assoc(); // fetch data 
+_____________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+DELETE FROM table_name WHERE condition;
+
+ALTER TABLE table_name
+ADD column_name datatype;
+
+datatype for hash-password BINARY(16)
+
+datatype for fileupload binary(1000)
+
+ALTER TABLE pub_view
+MODIFY COLUMN pubpassword char(60);
+
+
+
+INSERT INTO reviewer (revname,revpaper) VALUES ('Ahmed tawfik', 'x');
+
+
+DELETE FROM pap_view WHERE papid = $papid ;
+UPDATE pap_view SET papname='pelllllllm' WHERE papid=121
+
+
+----------------------------------------------------------------------------------
+/*full example to fetch data from sql*/
+PHP File: readphp.php
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Read Data From Database Using PHP - Demo Preview</title>
+<meta content="noindex, nofollow" name="robots">
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="maindiv">
+<div class="divA">
+<div class="title">
+<h2>Read Data Using PHP</h2>
+</div>
+<div class="divB">
+<div class="divD">
+<p>Click On Menu</p>
+<?php
+$connection = mysql_connect("localhost", "root", ""); // Establishing Connection with Server
+$db = mysql_select_db("company", $connection); // Selecting Database
+//MySQL Query to read data
+$query = mysql_query("select * from employee", $connection);
+while ($row = mysql_fetch_array($query)) {
+echo "<b><a href="readphp.php?id={$row['employee_id']}">{$row['employee_name']}</a></b>";
+echo "<br />";
+}
+?>
+</div>
+<?php
+if (isset($_GET['id'])) {
+$id = $_GET['id'];
+$query1 = mysql_query("select * from employee where employee_id=$id", $connection);
+while ($row1 = mysql_fetch_array($query1)) {
+?>
+<div class="form">
+<h2>---Details---</h2>
+<!-- Displaying Data Read From Database -->
+<span>Name:</span> <?php echo $row1['employee_name']; ?>
+<span>E-mail:</span> <?php echo $row1['employee_email']; ?>
+<span>Contact No:</span> <?php echo $row1['employee_contact']; ?>
+<span>Address:</span> <?php echo $row1['employee_address']; ?>
+</div>
+<?php
+}
+}
+?>
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+</div>
+<?php
+mysql_close($connection); // Closing Connection with Server
+?>
+</body>
+</html>
+
+
+
+MySQL Code Segment:
+
+CREATE DATABASE company;
+CREATE TABLE employee(
+employee_id int(10) NOT NULL AUTO_INCREMENT,
+employee_name varchar(255) NOT NULL,
+employee_email varchar(255) NOT NULL,
+employee_contact varchar(255) NOT NULL,
+employee_address varchar(255) NOT NULL,
+PRIMARY KEY (employee_id)
+)
+-------------------------------------------------------------------------------------
